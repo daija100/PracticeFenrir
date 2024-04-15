@@ -19,5 +19,7 @@ public final class Constants {
 
   public static class IntakeConstants{
     public static final int kIntakeMotor = 5;
+    public static final int kIntakeSolenoidForward = 1;
+    public static final int kIntakeSolenoidReverse = 2;
   }
 }
