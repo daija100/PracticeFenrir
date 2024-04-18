@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.ForwardLimitValue;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -17,9 +18,10 @@ public class IntakeSubsystem extends SubsystemBase {
   
   private TalonFX IntakeMotor;
   
-  private DoubleSolenoid IntakeSolenoid;
+  private final DoubleSolenoid IntakeSolenoid;
   
   public boolean IntakeStatus;
+  private int BallCount;
   
   public static IntakeEnumState mIntakeEnumState;
 
@@ -32,11 +34,14 @@ public class IntakeSubsystem extends SubsystemBase {
   Constants.IntakeConstants.kIntakeSolenoidReverse);
 
   mIntakeEnumState = IntakeEnumState.S_Has0Balls;
+  IntakeStatus = true;
+  BallCount = 0;
   }
 
   public enum IntakeEnumState{
     S_Has0Balls, S_Has1Ball,
-    S_Has2Balls, S_Has3Balls
+    S_Has2Balls, S_Has3Balls,
+    S_Has4Balls, S_Has5Balls
   }
 
     public void RunIntakeState(){
@@ -53,38 +58,103 @@ public class IntakeSubsystem extends SubsystemBase {
       case S_Has3Balls:
         Has3Balls();
         break;
+      case S_Has4Balls:
+        Has4Balls();
+        break;
+      case S_Has5Balls:
+        Has5Balls();
+        break;
    }
   }
-  
+
+  public void BallCounter(){
+    if(!BannerStatus()){
+      BallCount = BallCount + 1;
+      if(BallCount == 1){
+        mIntakeEnumState = IntakeEnumState.S_Has1Ball;}
+      else if(BallCount == 2){
+        mIntakeEnumState = IntakeEnumState.S_Has2Balls;}
+      else if(BallCount == 3){
+        mIntakeEnumState = IntakeEnumState.S_Has3Balls;}
+      else if(BallCount == 4){
+        mIntakeEnumState = IntakeEnumState.S_Has4Balls;}
+      else if(BallCount == 5){
+        mIntakeEnumState = IntakeEnumState.S_Has5Balls;
+        IntakeStatus = false;}
+    }
+    else{}
+
+  }  
+
   public void Has0Balls(){
     if(IntakeStatus){
-    if(BannerStatus()){
-    IntakeMotor.set(0);
-    mIntakeEnumState = IntakeEnumState.S_Has1Ball;
+      ActivateIntake();
     }
-    else {IntakeMotor.set(.5);
+    else {
+      DeactivateIntake();
     }
-  }
-  else{}
   }
 
   public void Has1Ball(){
-
+    if(IntakeStatus){
+      ActivateIntake();
+    }
+    else {
+      DeactivateIntake();
+    }
   }
 
   public void Has2Balls(){
-
+    if(IntakeStatus){
+      ActivateIntake();
+    }
+    else {
+      DeactivateIntake();
+    }
   }
 
   public void Has3Balls(){
-
+    if(IntakeStatus){
+      ActivateIntake();
+    }
+    else {
+      DeactivateIntake();
+    }
   }
+
+  public void Has4Balls(){
+    if(IntakeStatus){
+      ActivateIntake();
+    }
+    else {
+      DeactivateIntake();
+    }
+  }
+
+  public void Has5Balls(){
+DeactivateIntake();
+  }
+  
+  public void ActivateIntake(){
+    IntakeMotor.set(0.3);
+    IntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+  }
+
+  public void DeactivateIntake(){
+    IntakeMotor.set(0);
+    IntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+  }
+
   public boolean BannerStatus(){
     return (IntakeMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround);
   }
+
   @Override
   public void periodic() {
     RunIntakeState();
+    BallCounter();
+    SmartDashboard.getNumber("BallCount", BallCount);
+    SmartDashboard.getBoolean("IntakeActive", IntakeStatus);
     // This method will be called once per scheduler run
   }
 }
