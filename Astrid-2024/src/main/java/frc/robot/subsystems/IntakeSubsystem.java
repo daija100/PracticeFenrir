@@ -8,7 +8,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,7 +20,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final DoubleSolenoid IntakeSolenoid;
   
   public boolean IntakeStatus;
-  private int BallCount;
+
   
   public static IntakeEnumState mIntakeEnumState;
 
@@ -34,8 +33,7 @@ public class IntakeSubsystem extends SubsystemBase {
   Constants.IntakeConstants.kIntakeSolenoidReverse);
 
   mIntakeEnumState = IntakeEnumState.S_Has0Balls;
-  IntakeStatus = true;
-  BallCount = 0;
+  IntakeStatus = false;
   }
 
   public enum IntakeEnumState{
@@ -66,25 +64,6 @@ public class IntakeSubsystem extends SubsystemBase {
         break;
    }
   }
-
-  public void BallCounter(){
-    if(!BannerStatus()){
-      BallCount = BallCount + 1;
-      if(BallCount == 1){
-        mIntakeEnumState = IntakeEnumState.S_Has1Ball;}
-      else if(BallCount == 2){
-        mIntakeEnumState = IntakeEnumState.S_Has2Balls;}
-      else if(BallCount == 3){
-        mIntakeEnumState = IntakeEnumState.S_Has3Balls;}
-      else if(BallCount == 4){
-        mIntakeEnumState = IntakeEnumState.S_Has4Balls;}
-      else if(BallCount == 5){
-        mIntakeEnumState = IntakeEnumState.S_Has5Balls;
-        IntakeStatus = false;}
-    }
-    else{}
-
-  }  
 
   public void Has0Balls(){
     if(IntakeStatus){
@@ -145,15 +124,9 @@ DeactivateIntake();
     IntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
   }
 
-  public boolean BannerStatus(){
-    return (IntakeMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround);
-  }
-
   @Override
   public void periodic() {
     RunIntakeState();
-    BallCounter();
-    SmartDashboard.getNumber("BallCount", BallCount);
     SmartDashboard.getBoolean("IntakeActive", IntakeStatus);
     // This method will be called once per scheduler run
   }

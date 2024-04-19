@@ -22,4 +22,7 @@ public final class Constants {
     public static final int kIntakeSolenoidForward = 1;
     public static final int kIntakeSolenoidReverse = 2;
   }
+  public static class FeederConstants{
+    public static final int kFeederMotor = 6;
+  }
 }
