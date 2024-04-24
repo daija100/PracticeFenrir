@@ -19,7 +19,7 @@ public class IntakeSubsystem extends SubsystemBase {
   
   private final DoubleSolenoid IntakeSolenoid;
   
-  public boolean IntakeStatus;
+  public static boolean IntakeStatus;
 
   
   public static IntakeEnumState mIntakeEnumState;

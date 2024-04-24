@@ -37,7 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   }
 
-  private enum ShooterState{
+  public enum ShooterState{
     S_HoodOutFull, S_HoodWithLatch,
     S_HoodIn
   }
@@ -56,11 +56,20 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public void HoodOutFull(){}
+  public void HoodOutFull(){
+    ShooterLatchSolenoid.set(DoubleSolenoid.Value.kForward);
+    ShooterHoodSolenoid.set(DoubleSolenoid.Value.kReverse);
+  }
 
-  public void HoodWithLatch(){}
+  public void HoodWithLatch(){
+    ShooterLatchSolenoid.set(DoubleSolenoid.Value.kReverse);
+    ShooterHoodSolenoid.set(DoubleSolenoid.Value.kReverse);
+    }
 
-  public void HoodIn(){}
+  public void HoodIn(){
+    ShooterLatchSolenoid.set(DoubleSolenoid.Value.kForward);
+    ShooterHoodSolenoid.set(DoubleSolenoid.Value.kForward);
+  }
 
   @Override
   public void periodic() {

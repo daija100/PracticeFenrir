@@ -28,7 +28,7 @@ public class FeederSubsystem extends SubsystemBase {
   BallCount = 0;
   }
 
-  private enum FeederState{
+  public enum FeederState{
     S_Feeder0Balls, S_Feeder1Ball,
     S_Feeder2Balls, S_Feeder3Balls,
     S_Feeder4Balls, S_Feeder5Balls
