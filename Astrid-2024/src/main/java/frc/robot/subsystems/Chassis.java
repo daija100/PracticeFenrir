@@ -23,13 +23,37 @@ public class Chassis extends SubsystemBase {
     DriveBackLeft = new TalonFX(Constants.ChassisConstants.kDriveBackLeft);
     DriveBackRight = new TalonFX(Constants.ChassisConstants.kDriveBackRight);
 
+    // Grouping the left and right motors
+   
+  
+
     DriveFrontLeft.setControl(
         new Follower(DriveBackLeft.getDeviceID(), Constants.kDontOpposeMasterDirection));
 
           DriveFrontRight.setControl(
      new Follower(DriveBackRight.getDeviceID(), Constants.kDontOpposeMasterDirection));
 
+    public static joystickDrive(double speed, double rotation) {
+    // Random formula I found that should be the “arcadeDrive” math stuff (uses the joystick to control the whole robot drive )
+    double leftSpeed = speed + rotation;
+    double rightSpeed = speed - rotation;
+
+    // Set the calculated speeds to the left and right motors
+    DriveFrontLeft.set(leftSpeed);
+    DriveBackLeft.set(leftSpeed);
+    DriveFrontRight.set(rightSpeed);
+    DriveBackRight.set(rightSpeed);
+}
+
+  // Set the rotation speed for both sides of the drivetrain sets the speed to zero it will make a stop when turning
+  public static turn(double rotationSpeed) {
+  Chassis.joystickDrive(0.0, rotationSpeed);
+}
   }
+ 
+
+
+
 
   @Override
   public void periodic() {
