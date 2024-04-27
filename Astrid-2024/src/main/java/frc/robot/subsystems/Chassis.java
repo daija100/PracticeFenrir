@@ -22,8 +22,10 @@ public class Chassis extends SubsystemBase {
     DriveFrontRight = new TalonFX(Constants.ChassisConstants.kDriveFrontRight);
     DriveBackLeft = new TalonFX(Constants.ChassisConstants.kDriveBackLeft);
     DriveBackRight = new TalonFX(Constants.ChassisConstants.kDriveBackRight);
-
-    // Grouping the left and right motors
+    
+    private static final double kTicksPerRotation = 2048;
+    private static final double kHundredMillisPerSecond = 10;
+    private static final double kSecondsPerMin = 60;
    
   
 
