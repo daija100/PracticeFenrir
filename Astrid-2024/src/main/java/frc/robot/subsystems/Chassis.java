@@ -15,6 +15,20 @@ public class Chassis extends SubsystemBase {
   private TalonFX DriveFrontRight;
   private TalonFX DriveBackLeft;
   private TalonFX DriveBackRight;
+  private DifferentialDrive drive;
+
+  private static final NetworkTable mTable = NetworkTableInstance.getDefault().getTable("limelight");
+
+  private static final double kTicksPerRotation = 2048;
+  private static final double kHundredMillisPerSecond = 10;
+  private static final double kSecondsPerMin = 60;
+
+  private static double feetToTicks(double feet) {
+      return feet * 13000;
+    }
+
+    private static final double kMaxVelocityError = 3500 - 3000;
+  
 
   /** Creates a new Chassis. */
   public Chassis() {
@@ -22,12 +36,9 @@ public class Chassis extends SubsystemBase {
     DriveFrontRight = new TalonFX(Constants.ChassisConstants.kDriveFrontRight);
     DriveBackLeft = new TalonFX(Constants.ChassisConstants.kDriveBackLeft);
     DriveBackRight = new TalonFX(Constants.ChassisConstants.kDriveBackRight);
+    drive = new DifferentialDrive(backLeft, backRight);
     
-    private static final double kTicksPerRotation = 2048;
-    private static final double kHundredMillisPerSecond = 10;
-    private static final double kSecondsPerMin = 60;
    
-  
 
     DriveFrontLeft.setControl(
         new Follower(DriveBackLeft.getDeviceID(), Constants.kDontOpposeMasterDirection));
@@ -35,25 +46,28 @@ public class Chassis extends SubsystemBase {
           DriveFrontRight.setControl(
      new Follower(DriveBackRight.getDeviceID(), Constants.kDontOpposeMasterDirection));
 
-    public static joystickDrive(double speed, double rotation) {
-    // Random formula I found that should be the “arcadeDrive” math stuff (uses the joystick to control the whole robot drive )
-    double leftSpeed = speed + rotation;
-    double rightSpeed = speed - rotation;
+        DriveBackLeft.setInverted(true);
+        DriveBackRight.setInverted(false);
 
-    // Set the calculated speeds to the left and right motors
-    DriveFrontLeft.set(leftSpeed);
-    DriveBackLeft.set(leftSpeed);
-    DriveFrontRight.set(rightSpeed);
-    DriveBackRight.set(rightSpeed);
-}
+        DriveFrontLeft.setSensorPhase(false);
+        DriveBackLeft.setSensorPhase(true);
 
-  // Set the rotation speed for both sides of the drivetrain sets the speed to zero it will make a stop when turning
-  public static turn(double rotationSpeed) {
-  Chassis.joystickDrive(0.0, rotationSpeed);
-}
+  
   }
  
+public void tankDrive(double leftSpeed, double rightSpeed) {
+        drive.tankDrive(leftSpeed, rightSpeed);
+    }
+      // Turn method for tank drive
+public void turn(double turnSpeed) {
+        // Set the speed of the left and right sides of the drivetrain
+        drive.tankDrive(turnSpeed, -turnSpeed);
+    }
 
+    // Arcade Drive method
+public void arcadeDrive(double speed, double rotation) {
+        drive.arcadeDrive(speed, rotation);
+    }
 
 
 
