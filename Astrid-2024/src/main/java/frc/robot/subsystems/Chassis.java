@@ -16,12 +16,18 @@ public class Chassis extends SubsystemBase {
   private TalonFX DriveBackLeft;
   private TalonFX DriveBackRight;
   private DifferentialDrive drive;
+  private Notifier notifier;
+  private NetworkTable mTable;
 
   private static final NetworkTable mTable = NetworkTableInstance.getDefault().getTable("limelight");
 
   private static final double kTicksPerRotation = 2048;
   private static final double kHundredMillisPerSecond = 10;
   private static final double kSecondsPerMin = 60;
+
+  private static final int kMotionAcceleration = 1500;
+  private static final int kMotionCruiseVelocity = 1500;
+
 
   private static double feetToTicks(double feet) {
       return feet * 13000;
@@ -37,7 +43,9 @@ public class Chassis extends SubsystemBase {
     DriveBackLeft = new TalonFX(Constants.ChassisConstants.kDriveBackLeft);
     DriveBackRight = new TalonFX(Constants.ChassisConstants.kDriveBackRight);
     drive = new DifferentialDrive(backLeft, backRight);
-    
+    mTable = NetworkTableInstance.getDefault().getTable("limelight");
+      // Initialize notifier for periodic tasks
+    notifier = new Notifier(this::periodicTask);
    
 
     DriveFrontLeft.setControl(
@@ -51,6 +59,9 @@ public class Chassis extends SubsystemBase {
 
         DriveFrontLeft.setSensorPhase(false);
         DriveBackLeft.setSensorPhase(true);
+
+    
+
 
   
   }
@@ -68,7 +79,26 @@ public void turn(double turnSpeed) {
 public void arcadeDrive(double speed, double rotation) {
         drive.arcadeDrive(speed, rotation);
     }
+public void turnArcade(double turnSpeed) {
+        // Set the speed for both sides of the drivetrain
+        drive.arcadeDrive(0.0, turnSpeed);
+    }
 
+ private void configureMotionProfile(WPI_TalonFX motor) {
+        motor.configMotionAcceleration(kMotionAcceleration);
+        motor.configMotionCruiseVelocity(kMotionCruiseVelocity);
+    }
+ 
+private void periodicTask() {
+        // Process motion profile buffer or any other periodic tasks
+    }
+
+    public static class Components {
+        public TalonFX DriveFrontLeft;
+        public TalonFX DriveFrontRight;
+        public TalonFX DriveBackLeft;
+        public TalonFX DriveBackRight;
+    }
 
 
   @Override
