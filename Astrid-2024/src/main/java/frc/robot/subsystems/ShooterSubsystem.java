@@ -7,7 +7,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -18,6 +20,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private DoubleSolenoid ShooterHoodSolenoid;
   private DoubleSolenoid ShooterLatchSolenoid;
+
+  public static double InputVelocity;
 
   public static ShooterState mShooterState;
 
@@ -39,7 +43,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public enum ShooterState{
     S_HoodOutFull, S_HoodWithLatch,
-    S_HoodIn
+    S_HoodIn, S_Accelerating,
+    S_Shooting
   }
 
   public void RunShooterState(){
@@ -58,21 +63,26 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void HoodOutFull(){
     ShooterLatchSolenoid.set(DoubleSolenoid.Value.kForward);
+    new WaitCommand(0.2);
     ShooterHoodSolenoid.set(DoubleSolenoid.Value.kReverse);
   }
 
   public void HoodWithLatch(){
     ShooterLatchSolenoid.set(DoubleSolenoid.Value.kReverse);
+    new WaitCommand(0.2);
     ShooterHoodSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
   public void HoodIn(){
     ShooterLatchSolenoid.set(DoubleSolenoid.Value.kForward);
+    new WaitCommand(0.2);
     ShooterHoodSolenoid.set(DoubleSolenoid.Value.kForward);
   }
 
   @Override
   public void periodic() {
+    RunShooterState();
+    InputVelocity = SmartDashboard.getNumber("InputVelocity", 0);
     // This method will be called once per scheduler run
   }
 }

@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.ForwardLimitValue;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -66,54 +67,40 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void Has0Balls(){
-    if(IntakeStatus){
-      ActivateIntake();
-    }
-    else {
-      DeactivateIntake();
-    }
+    BallLogicStuff();
   }
 
   public void Has1Ball(){
-    if(IntakeStatus){
-      ActivateIntake();
-    }
-    else {
-      DeactivateIntake();
-    }
+    BallLogicStuff();
   }
 
   public void Has2Balls(){
-    if(IntakeStatus){
-      ActivateIntake();
-    }
-    else {
-      DeactivateIntake();
-    }
+    BallLogicStuff();
   }
 
   public void Has3Balls(){
-    if(IntakeStatus){
-      ActivateIntake();
-    }
-    else {
-      DeactivateIntake();
-    }
+    BallLogicStuff();
   }
 
   public void Has4Balls(){
+    BallLogicStuff();
+  }
+
+  public void Has5Balls(){
+  DeactivateIntake();
+  }
+
+
+  public void BallLogicStuff(){
     if(IntakeStatus){
       ActivateIntake();
     }
     else {
       DeactivateIntake();
-    }
-  }
-
-  public void Has5Balls(){
-DeactivateIntake();
+    }    
   }
   
+  //these two functions are in BallLogicStuff
   public void ActivateIntake(){
     IntakeMotor.set(0.3);
     IntakeSolenoid.set(DoubleSolenoid.Value.kForward);
