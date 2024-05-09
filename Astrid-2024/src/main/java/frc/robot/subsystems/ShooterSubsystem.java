@@ -21,9 +21,13 @@ public class ShooterSubsystem extends SubsystemBase {
   private DoubleSolenoid ShooterHoodSolenoid;
   private DoubleSolenoid ShooterLatchSolenoid;
 
+  public static double UsedVelo;
+
   public static double InputVelocity;
 
-  public static ShooterState mShooterState;
+  public static ShooterHoodState mShooterHoodState;
+
+  public static ShooterSpinState mShooterSpinState;
 
   public ShooterSubsystem() {
     ShooterLeft = new TalonFX(Constants.ShooterConstants.kShooterLeft);
@@ -37,18 +41,25 @@ public class ShooterSubsystem extends SubsystemBase {
      Constants.ShooterConstants.kShooterLatchForward,
     Constants.ShooterConstants.kShooterLatchReverse);
 
-    mShooterState = ShooterState.S_HoodIn;
+    mShooterHoodState = ShooterHoodState.S_HoodIn;
+    mShooterSpinState = ShooterSpinState.S_Off;
 
+    ShooterRight.setControl()
   }
 
-  public enum ShooterState{
+  public enum ShooterHoodState{
     S_HoodOutFull, S_HoodWithLatch,
     S_HoodIn, S_Accelerating,
     S_Shooting
   }
 
-  public void RunShooterState(){
-    switch (mShooterState) {
+  public enum ShooterSpinState{
+    S_Off, S_Accelerating,
+    S_Shooting
+  }
+
+  public void RunShooterHoodState(){
+    switch (mShooterHoodState) {
       case S_HoodOutFull:
         HoodOutFull();
         break;
@@ -57,6 +68,20 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case S_HoodIn:
         HoodIn();
+        break;
+    }
+  }
+
+  public void RunShooterSpinState(){
+    switch (mShooterSpinState) {
+      case S_Off:
+        Off();
+        break;
+      case S_Accelerating:
+        Accelerating();
+        break;
+      case S_Shooting:
+        Shooting();
         break;
     }
   }
@@ -79,9 +104,22 @@ public class ShooterSubsystem extends SubsystemBase {
     ShooterHoodSolenoid.set(DoubleSolenoid.Value.kForward);
   }
 
+  public void Off(){
+    ShooterLeft.set(0);
+  }
+
+  public void Accelerating(){
+    ShooterLeft.set(UsedVelo);
+  }
+
+  public void Shooting(){
+    ShooterLeft.set(UsedVelo);
+  }
+
   @Override
   public void periodic() {
-    RunShooterState();
+    RunShooterHoodState();
+    RunShooterSpinState();
     InputVelocity = SmartDashboard.getNumber("InputVelocity", 0);
     // This method will be called once per scheduler run
   }
