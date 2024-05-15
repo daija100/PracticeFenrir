@@ -31,7 +31,8 @@ public class FeederSubsystem extends SubsystemBase {
   public enum FeederState{
     S_Feeder0Balls, S_Feeder1Ball,
     S_Feeder2Balls, S_Feeder3Balls,
-    S_Feeder4Balls, S_Feeder5Balls
+    S_Feeder4Balls, S_Feeder5Balls,
+    S_Feeding
   }
 
   private void RunFeederState(){
