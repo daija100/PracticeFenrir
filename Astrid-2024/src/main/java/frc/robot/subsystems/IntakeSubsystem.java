@@ -106,7 +106,9 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     RunIntakeState();
-    SmartDashboard.getBoolean("IntakeActive", IntakeStatus);
+    SmartDashboard.putBoolean("IntakeStatus", IntakeStatus);
+    SmartDashboard.putString("IntakeState", mIntakeEnumState.toString());
+
     // This method will be called once per scheduler run
   }
 }

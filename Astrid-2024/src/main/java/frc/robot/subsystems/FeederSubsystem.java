@@ -95,6 +95,8 @@ public class FeederSubsystem extends SubsystemBase {
     BallCounter();
     RunFeederState();
     SmartDashboard.putNumber("BallCount", BallCount);
+    SmartDashboard.putString("FeederState", mFeederState.toString());
+    SmartDashboard.putBoolean("IntakeBanner", FeederBannerStatus());
     // This method will be called once per scheduler run
   }
 }

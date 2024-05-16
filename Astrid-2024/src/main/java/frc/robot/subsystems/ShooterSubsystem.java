@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ForwardLimitValue;
 
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -146,7 +147,7 @@ public class ShooterSubsystem extends SubsystemBase {
     VelocityVoltage ShootSpeed = new VelocityVoltage(UsedVelo).withSlot(0);
 
   
-    if(FeederSubsystem.FeederBannerStatus()){
+    if(ShooterBannerStatus()){
       mShooterSpinState = ShooterSpinState.S_Off;
       FeederSubsystem.ReturnFeederState();
       IntakeSubsystem.ReturnIntakeState();
@@ -185,11 +186,19 @@ public class ShooterSubsystem extends SubsystemBase {
     return ShooterLeft.getVelocity().getValueAsDouble();
   }
 
+    public boolean ShooterBannerStatus(){
+    return (ShooterLeft.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround);
+  }
+
   @Override
   public void periodic() {
     CheckShooterReady();
     RunShooterHoodState();
     RunShooterSpinState();
+    SmartDashboard.putString("ShooterHoodState", mShooterHoodState.toString());
+    SmartDashboard.putString("ShooterSpinState", mShooterSpinState.toString());
+    SmartDashboard.putNumber("ShooterSpeed", RealMotorSpeed());
+    SmartDashboard.putBoolean("ShooterBanner", ShooterBannerStatus());
     InputVelocity = SmartDashboard.getNumber("InputVelocity", 0);
     // This method will be called once per scheduler run
   }
