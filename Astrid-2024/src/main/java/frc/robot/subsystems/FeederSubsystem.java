@@ -9,100 +9,67 @@ import com.ctre.phoenix6.signals.ForwardLimitValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem.IntakeEnumState;
 
 public class FeederSubsystem extends SubsystemBase {
   /** Creates a new FeederSubsystem. */
 
-  private TalonFX FeederMotor;
+  private static TalonFX FeederMotor;
 
   private IntakeSubsystem mIntakeSubsystem;
 
   public static FeederState mFeederState;
-  private int BallCount;
+  public static int BallCount;
 
   public FeederSubsystem() {
   FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor);
-  mFeederState = FeederState.S_Feeder0Balls;
+  mFeederState = FeederState.S_HasSpace;
   BallCount = 0;
   }
 
   public enum FeederState{
-    S_Feeder0Balls, S_Feeder1Ball,
-    S_Feeder2Balls, S_Feeder3Balls,
-    S_Feeder4Balls, S_Feeder5Balls,
+    S_HasSpace, S_FeederFull,
     S_Feeding
   }
 
   private void RunFeederState(){
     switch (mFeederState) {
-      case S_Feeder0Balls:
-        Feeder0Balls();
+      case S_HasSpace:
+        HasSpace();
         break;
-      case S_Feeder1Ball:
-        Feeder1Ball();
+      case S_FeederFull:
+        FeederFull();
         break;
-      case S_Feeder2Balls:
-        Feeder2Balls();
-        break;
-      case S_Feeder3Balls:
-        Feeder3Balls();
-        break;
-      case S_Feeder4Balls:
-        Feeder4Balls();
-        break;
-      case S_Feeder5Balls:
-        Feeder5Balls();
-        break;                                        
+      case S_Feeding:
+        Feeding();
+        break;                                     
     }
   }
 
   public void BallCounter(){
   if(!FeederBannerStatus()){
-    BallCount = BallCount + 1;
-      if(BallCount == 1){
-       IntakeSubsystem.mIntakeEnumState = IntakeEnumState.S_Has1Ball;
-       mFeederState = FeederState.S_Feeder1Ball;}
-     else if(BallCount == 2){
-       IntakeSubsystem.mIntakeEnumState = IntakeEnumState.S_Has2Balls;
-       mFeederState = FeederState.S_Feeder2Balls;}
-     else if(BallCount == 3){
-       IntakeSubsystem.mIntakeEnumState = IntakeEnumState.S_Has3Balls;
-       mFeederState = FeederState.S_Feeder3Balls;}
-     else if(BallCount == 4){
-       IntakeSubsystem.mIntakeEnumState = IntakeEnumState.S_Has4Balls;
-       mFeederState = FeederState.S_Feeder4Balls;}
-     else if(BallCount == 5){
-       IntakeSubsystem.mIntakeEnumState = IntakeEnumState.S_Has5Balls;
-       mFeederState = FeederState.S_Feeder5Balls;
-       mIntakeSubsystem.IntakeStatus = false;}
-     if(!FeederBannerStatus()){}
-     else{BallCounter();}
+    while(!FeederBannerStatus()){
+      new WaitCommand(0.01);
     }
-    else{}
-
+    BallCount++;
+  }
   }  
 
-  private void Feeder0Balls(){
-    if(!FeederBannerStatus()){
-      FeederMotor.set(0.3);
-    }
-    else{
-      FeederMotor.set(0);
-    }
+  private void HasSpace(){
+    FeederLogic();
   }
 
-  private void Feeder1Ball(){
-    if(!FeederBannerStatus()){
-      FeederMotor.set(0.3);
-    }
-    else{
-      FeederMotor.set(0);
-    }    
+  private void FeederFull(){
+    FeederMotor.set(0);
   }
 
-  private void Feeder2Balls(){
+  private void Feeding(){
+    FeederMotor.set(-0.3);
+  }
+
+  private void FeederLogic(){
     if(!FeederBannerStatus()){
       FeederMotor.set(0.3);
     }
@@ -111,39 +78,21 @@ public class FeederSubsystem extends SubsystemBase {
     }    
   }
 
-  private void Feeder3Balls(){
-    if(!FeederBannerStatus()){
-      FeederMotor.set(0.3);
+  public static void ReturnFeederState(){
+    if(BallCount >= 5){
+      mFeederState = FeederState.S_FeederFull;
+    } else{
+      mFeederState = FeederState.S_HasSpace;
     }
-    else{
-      FeederMotor.set(0);
-    }    
   }
 
-  private void Feeder4Balls(){
-    if(!FeederBannerStatus()){
-      FeederMotor.set(0.3);
-    }
-    else{
-      FeederMotor.set(0);
-    }    
-  }
-
-  private void Feeder5Balls(){
-    if(!FeederBannerStatus()){
-      FeederMotor.set(0.3);
-    }
-    else{
-      FeederMotor.set(0);
-    }    
-  }
-
-  public boolean FeederBannerStatus(){
+  public static boolean FeederBannerStatus(){
     return (FeederMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround);
   }
 
   @Override
   public void periodic() {
+    BallCounter();
     RunFeederState();
     SmartDashboard.putNumber("BallCount", BallCount);
     // This method will be called once per scheduler run

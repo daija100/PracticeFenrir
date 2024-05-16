@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.subsystems.IntakeSubsystem.IntakeEnumState;
+import frc.robot.subsystems.FeederSubsystem.FeederState;;
 
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
@@ -40,6 +42,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public static ShooterHoodState mShooterHoodState;
 
   public static ShooterSpinState mShooterSpinState;
+
 
   public ShooterSubsystem() {
     var Slot0Configs = new Slot0Configs();
@@ -69,8 +72,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public enum ShooterHoodState{
     S_HoodOutFull, S_HoodWithLatch,
-    S_HoodIn, S_Accelerating,
-    S_Shooting
+    S_HoodIn
+
   }
 
   public enum ShooterSpinState{
@@ -129,16 +132,27 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void Accelerating(){
-    if(Ready){}
     VelocityVoltage ShootSpeed = new VelocityVoltage(UsedVelo).withSlot(0);
 
     ShooterLeft.setControl(ShootSpeed);
+    if(Ready){
+      IntakeSubsystem.mIntakeEnumState = IntakeEnumState.S_Feeding;
+      FeederSubsystem.mFeederState = FeederState.S_Feeding;
+      mShooterSpinState = ShooterSpinState.S_Shooting;
+    }
   }
 
   public void Shooting(){
     VelocityVoltage ShootSpeed = new VelocityVoltage(UsedVelo).withSlot(0);
 
-    ShooterLeft.setControl(ShootSpeed);
+  
+    if(FeederSubsystem.FeederBannerStatus()){
+      mShooterSpinState = ShooterSpinState.S_Off;
+      FeederSubsystem.ReturnFeederState();
+      IntakeSubsystem.ReturnIntakeState();
+    } else{
+      ShooterLeft.setControl(ShootSpeed);
+    }
   }
 
   private void CheckShooterReady(){
@@ -173,6 +187,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    CheckShooterReady();
     RunShooterHoodState();
     RunShooterSpinState();
     InputVelocity = SmartDashboard.getNumber("InputVelocity", 0);

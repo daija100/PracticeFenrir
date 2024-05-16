@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.FeederSubsystem;
+import frc.robot.subsystems.FeederSubsystem.FeederState;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -33,61 +35,51 @@ public class IntakeSubsystem extends SubsystemBase {
     Constants.IntakeConstants.kIntakeSolenoidForward, 
   Constants.IntakeConstants.kIntakeSolenoidReverse);
 
-  mIntakeEnumState = IntakeEnumState.S_Has0Balls;
+  mIntakeEnumState = IntakeEnumState.S_WaitingForBalls;
   IntakeStatus = false;
   }
 
   public enum IntakeEnumState{
-    S_Has0Balls, S_Has1Ball,
-    S_Has2Balls, S_Has3Balls,
-    S_Has4Balls, S_Has5Balls
+    S_WaitingForBalls, S_FullBalls,
+    S_Feeding
   }
 
     public void RunIntakeState(){
     switch (mIntakeEnumState) {
-      case S_Has0Balls:
-        Has0Balls();
+      case S_WaitingForBalls:
+        WaitingForBalls();
         break;
-      case S_Has1Ball:
-        Has1Ball();
+      case S_FullBalls:
+        FullBalls();
         break;      
-      case S_Has2Balls:
-        Has2Balls();
-        break;
-      case S_Has3Balls:
-        Has3Balls();
-        break;
-      case S_Has4Balls:
-        Has4Balls();
-        break;
-      case S_Has5Balls:
-        Has5Balls();
+      case S_Feeding:
+        Feeding();
         break;
    }
   }
 
-  public void Has0Balls(){
-    BallLogicStuff();
+  private void WaitingForBalls(){
+    if(FeederSubsystem.BallCount == 5){
+      mIntakeEnumState = IntakeEnumState.S_FullBalls;
+    } else{
+      BallLogicStuff();
+    }
   }
 
-  public void Has1Ball(){
-    BallLogicStuff();
+  private void FullBalls(){
+    DeactivateIntake();
   }
 
-  public void Has2Balls(){
-    BallLogicStuff();
+  private void Feeding(){
+    IntakeMotor.set(-0.3);
   }
 
-  public void Has3Balls(){
-    BallLogicStuff();
+  public static void ReturnIntakeState(){
+  if(FeederSubsystem.BallCount >= 5){
+    mIntakeEnumState = IntakeEnumState.S_FullBalls;
+  } else{
+    mIntakeEnumState = IntakeEnumState.S_WaitingForBalls;
   }
-
-  public void Has4Balls(){
-    BallLogicStuff();
-  }
-
-  public void Has5Balls(){
-  DeactivateIntake();
   }
 
 

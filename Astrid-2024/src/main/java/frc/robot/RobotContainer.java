@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShooterInCommand;
 import frc.robot.commands.ShooterOutFullCommand;
 import frc.robot.commands.ShooterOutWithLatchCommand;
@@ -56,6 +57,7 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     CoDriver.x().onTrue(new ToggleIntake(mIntakeSubsystem));
+    CoDriver.y().onTrue(new ShootCommand(mShooterSubsytem));
     
     //Shooter hood commands
     CoDriver.leftBumper().onTrue(new ShooterInCommand(mShooterSubsytem));
