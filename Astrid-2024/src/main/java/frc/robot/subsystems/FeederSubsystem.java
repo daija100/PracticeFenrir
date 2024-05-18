@@ -50,10 +50,11 @@ public class FeederSubsystem extends SubsystemBase {
 
   public void BallCounter(){
   if(!FeederBannerStatus()){
-    while(!FeederBannerStatus()){
+    if(!FeederBannerStatus()){
       new WaitCommand(0.01);
-    }
+    } else{
     BallCount++;
+    }
   }
   }  
 
