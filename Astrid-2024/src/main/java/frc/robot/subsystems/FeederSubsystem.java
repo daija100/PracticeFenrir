@@ -27,6 +27,8 @@ public class FeederSubsystem extends SubsystemBase {
   FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor);
   mFeederState = FeederState.S_HasSpace;
   BallCount = 0;
+
+  BallCounter();
   }
 
   public enum FeederState{
@@ -50,12 +52,12 @@ public class FeederSubsystem extends SubsystemBase {
 
   public void BallCounter(){
   if(!FeederBannerStatus()){
-    if(!FeederBannerStatus()){
-      new WaitCommand(0.01);
-    } else{
-    BallCount++;
+    while(!FeederBannerStatus()){
+      new WaitCommand(0.1);
     }
+    BallCount++;
   }
+  BallCounter();
   }  
 
   private void HasSpace(){
@@ -93,7 +95,6 @@ public class FeederSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    BallCounter();
     RunFeederState();
     SmartDashboard.putNumber("BallCount", BallCount);
     SmartDashboard.putString("FeederState", mFeederState.toString());
