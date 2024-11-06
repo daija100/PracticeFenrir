@@ -10,16 +10,17 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+
+
 public class Chassis extends SubsystemBase {
   private TalonFX DriveFrontLeft;
   private TalonFX DriveFrontRight;
   private TalonFX DriveBackLeft;
   private TalonFX DriveBackRight;
   private DifferentialDrive drive;
-  private Notifier notifier;
-  private NetworkTable mTable;
 
-  private static final NetworkTable mTable = NetworkTableInstance.getDefault().getTable("limelight");
+ 
 
   private static final double kTicksPerRotation = 2048;
   private static final double kHundredMillisPerSecond = 10;
@@ -31,9 +32,9 @@ public class Chassis extends SubsystemBase {
 
   private static double feetToTicks(double feet) {
       return feet * 13000;
-    }
+  }
 
-    private static final double kMaxVelocityError = 3500 - 3000;
+  private static final double kMaxVelocityError = 3500 - 3000;
   
 
   /** Creates a new Chassis. */
@@ -42,23 +43,20 @@ public class Chassis extends SubsystemBase {
     DriveFrontRight = new TalonFX(Constants.ChassisConstants.kDriveFrontRight);
     DriveBackLeft = new TalonFX(Constants.ChassisConstants.kDriveBackLeft);
     DriveBackRight = new TalonFX(Constants.ChassisConstants.kDriveBackRight);
-    drive = new DifferentialDrive(backLeft, backRight);
-    mTable = NetworkTableInstance.getDefault().getTable("limelight");
+    drive = new DifferentialDrive(DriveBackLeft, DriveBackRight);
       // Initialize notifier for periodic tasks
-    notifier = new Notifier(this::periodicTask);
-   
+  
 
     DriveFrontLeft.setControl(
-        new Follower(DriveBackLeft.getDeviceID(), Constants.kDontOpposeMasterDirection));
+      new Follower(DriveBackLeft.getDeviceID(), Constants.kDontOpposeMasterDirection));
 
-          DriveFrontRight.setControl(
-     new Follower(DriveBackRight.getDeviceID(), Constants.kDontOpposeMasterDirection));
+    DriveFrontRight.setControl(
+      new Follower(DriveBackRight.getDeviceID(), Constants.kDontOpposeMasterDirection));
 
         DriveBackLeft.setInverted(true);
         DriveBackRight.setInverted(false);
 
-        DriveFrontLeft.setSensorPhase(false);
-        DriveBackLeft.setSensorPhase(true);
+     
 
     
 
@@ -66,14 +64,6 @@ public class Chassis extends SubsystemBase {
   
   }
  
-public void tankDrive(double leftSpeed, double rightSpeed) {
-        drive.tankDrive(leftSpeed, rightSpeed);
-    }
-      // Turn method for tank drive
-public void turn(double turnSpeed) {
-        // Set the speed of the left and right sides of the drivetrain
-        drive.tankDrive(turnSpeed, -turnSpeed);
-    }
 
     // Arcade Drive method
 public void arcadeDrive(double speed, double rotation) {
@@ -84,14 +74,9 @@ public void turnArcade(double turnSpeed) {
         drive.arcadeDrive(0.0, turnSpeed);
     }
 
- private void configureMotionProfile(WPI_TalonFX motor) {
-        motor.configMotionAcceleration(kMotionAcceleration);
-        motor.configMotionCruiseVelocity(kMotionCruiseVelocity);
-    }
+
  
-private void periodicTask() {
-        // Process motion profile buffer or any other periodic tasks
-    }
+
 
     public static class Components {
         public TalonFX DriveFrontLeft;
