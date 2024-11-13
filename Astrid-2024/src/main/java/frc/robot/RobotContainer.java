@@ -34,7 +34,7 @@ public class RobotContainer {
 
       m_driverController.rightStick()
     .whileTrue(
-      Driver.applyRequest(
+      m_Chassis.applyRequest(
           () ->
               point.withModuleDirection(
                   new Rotation2d(-Driver.getLeftY(), -Driver.getLeftX()))));

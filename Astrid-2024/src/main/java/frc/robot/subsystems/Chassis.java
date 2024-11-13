@@ -39,11 +39,11 @@ public class Chassis extends SubsystemBase {
 
   /** Creates a new Chassis. */
   public Chassis() {
-    DriveFrontLeft = new TalonFX(Constants.ChassisConstants.kDriveFrontLeft);
-    DriveFrontRight = new TalonFX(Constants.ChassisConstants.kDriveFrontRight);
-    DriveBackLeft = new TalonFX(Constants.ChassisConstants.kDriveBackLeft);
-    DriveBackRight = new TalonFX(Constants.ChassisConstants.kDriveBackRight);
-    drive = new DifferentialDrive(DriveBackLeft, DriveBackRight);
+    TalonFX DriveFrontLeft = new TalonFX(Constants.ChassisConstants.kDriveFrontLeft);
+    TalonFX DriveFrontRight = new TalonFX(Constants.ChassisConstants.kDriveFrontRight);
+    TalonFX DriveBackLeft = new TalonFX(Constants.ChassisConstants.kDriveBackLeft);
+    TalonFX DriveBackRight = new TalonFX(Constants.ChassisConstants.kDriveBackRight);
+    DifferentialDrive drive = new DifferentialDrive(DriveBackLeft, DriveBackRight);
       // Initialize notifier for periodic tasks
   
 
@@ -56,12 +56,6 @@ public class Chassis extends SubsystemBase {
         DriveBackLeft.setInverted(true);
         DriveBackRight.setInverted(false);
 
-     
-
-    
-
-
-  
   }
  
 
