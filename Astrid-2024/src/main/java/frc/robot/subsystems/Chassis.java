@@ -14,45 +14,38 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 
 public class Chassis extends SubsystemBase {
+  //Creates all of the motors that are used for the wheels
   private TalonFX DriveFrontLeft;
   private TalonFX DriveFrontRight;
   private TalonFX DriveBackLeft;
   private TalonFX DriveBackRight;
   private DifferentialDrive drive;
 
- 
-
-  private static final double kTicksPerRotation = 2048;
-  private static final double kHundredMillisPerSecond = 10;
-  private static final double kSecondsPerMin = 60;
-
-  private static final int kMotionAcceleration = 1500;
-  private static final int kMotionCruiseVelocity = 1500;
-
-
-  private static double feetToTicks(double feet) {
-      return feet * 13000;
-  }
-
-  private static final double kMaxVelocityError = 3500 - 3000;
-  
-
   /** Creates a new Chassis. */
   public Chassis() {
-    TalonFX DriveFrontLeft = new TalonFX(Constants.ChassisConstants.kDriveFrontLeft);
-    TalonFX DriveFrontRight = new TalonFX(Constants.ChassisConstants.kDriveFrontRight);
-    TalonFX DriveBackLeft = new TalonFX(Constants.ChassisConstants.kDriveBackLeft);
-    TalonFX DriveBackRight = new TalonFX(Constants.ChassisConstants.kDriveBackRight);
+    DriveFrontLeft = new TalonFX(Constants.ChassisConstants.kDriveFrontLeft);
+    DriveFrontRight = new TalonFX(Constants.ChassisConstants.kDriveFrontRight);
+    DriveBackLeft = new TalonFX(Constants.ChassisConstants.kDriveBackLeft);
+    DriveBackRight = new TalonFX(Constants.ChassisConstants.kDriveBackRight);
     DifferentialDrive drive = new DifferentialDrive(DriveBackLeft, DriveBackRight);
-      // Initialize notifier for periodic tasks
-  
 
+    /*
+    Used to make the back wheels follow their corresponding front wheels
+    */
     DriveFrontLeft.setControl(
       new Follower(DriveBackLeft.getDeviceID(), Constants.kDontOpposeMasterDirection));
 
     DriveFrontRight.setControl(
       new Follower(DriveBackRight.getDeviceID(), Constants.kDontOpposeMasterDirection));
 
+        /*
+         * 
+         * PLEASE
+         * CHECK
+         * WHEN
+         * RUNNING
+         * 
+         */
         DriveBackLeft.setInverted(true);
         DriveBackRight.setInverted(false);
 
@@ -67,10 +60,6 @@ public void turnArcade(double turnSpeed) {
         // Set the speed for both sides of the drivetrain
         drive.arcadeDrive(0.0, turnSpeed);
     }
-
-
- 
-
 
     public static class Components {
         public TalonFX DriveFrontLeft;
