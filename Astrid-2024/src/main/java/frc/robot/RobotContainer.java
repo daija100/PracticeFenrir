@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Chassis;
+import frc.robot.commands.DriveCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -29,15 +30,13 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    m_Chassis.setDefaultCommand(
+      DriveCommand(m_Chassis, m_driverController.getLeftY(), m_driverController.getRightX())
+    );
+
     // Configure the trigger bindings
     configureBindings();
-
-      m_driverController.rightStick()
-    .whileTrue(
-      m_Chassis.applyRequest(
-          () ->
-              point.withModuleDirection(
-                  new Rotation2d(-Driver.getLeftY(), -Driver.getLeftX()))));
 
   }
 
@@ -66,7 +65,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return null;
   }
 }
