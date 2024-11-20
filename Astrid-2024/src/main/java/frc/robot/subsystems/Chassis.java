@@ -27,7 +27,7 @@ public class Chassis extends SubsystemBase {
     DriveFrontRight = new TalonFX(Constants.ChassisConstants.kDriveFrontRight);
     DriveBackLeft = new TalonFX(Constants.ChassisConstants.kDriveBackLeft);
     DriveBackRight = new TalonFX(Constants.ChassisConstants.kDriveBackRight);
-    DifferentialDrive drive = new DifferentialDrive(DriveBackLeft, DriveBackRight);
+    drive = new DifferentialDrive(DriveBackLeft, DriveBackRight);
 
     /*
     Used to make the back wheels follow their corresponding front wheels
@@ -71,6 +71,8 @@ public void turnArcade(double turnSpeed) {
 
   @Override
   public void periodic() {
+
+    
    
     // This method will be called once per scheduler run
   }

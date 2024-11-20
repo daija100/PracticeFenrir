@@ -17,7 +17,7 @@ public class DriveCommand extends Command {
   private final DoubleSupplier m_throttleY;
 
   //The subsystem
-  private final Chassis m_drivebase;
+  public final Chassis m_drivebase;
 
   //Helps report
   private final Notifier m_driveThread;
